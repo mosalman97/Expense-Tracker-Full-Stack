@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 
-const API_URL = "http://192.168.70.162:5001/api";
+export const API_URL = "http://192.168.70.162:5001/api";
 
 export const useTransactions = (userId) => {
 	const [transactions, setTransactions] = useState([]);
@@ -40,9 +40,11 @@ export const useTransactions = (userId) => {
 	}, [userId]);
 
 	const fetchAll = useCallback(async () => {
+		if (!userId) return;
+
+		setIsLoading(true);
 		try {
-			await Promise.all([fetchSummery(), fetchTransactions()]);
-			setIsLoading(false);
+			await Promise.all([fetchTransactions(), fetchSummery()]);
 		} catch (error) {
 			console.error("Error loading data:", error);
 		} finally {

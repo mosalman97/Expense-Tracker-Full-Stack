@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Link, router } from "expo-router";
 import {
@@ -8,6 +8,7 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	RefreshControl,
 } from "react-native";
 import { SignOutButton } from "../../components/SignOutButton";
 import { useTransactions } from "../../hooks/useTransactions";
@@ -17,6 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
 import { BalanceCard } from "../../components/BalanceCard";
 import { TransactionItem } from "../../components/TransactionItem";
+import { NoTransactionsFound } from "../../components/NoTransactionFound";
+
 export default function Page() {
 	const { user } = useUser();
 	const {
@@ -27,10 +30,17 @@ export default function Page() {
 		summery,
 		transactions,
 	} = useTransactions(user.id);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const onRefreashing = async () => {
+		setRefreshing(true);
+		await fetchAll();
+		setRefreshing(false);
+	};
 
 	useEffect(() => {
 		fetchAll();
-	}, []);
+	}, [fetchAll]);
 
 	const handleDelete = (id) => {
 		Alert.alert(
@@ -50,7 +60,7 @@ export default function Page() {
 		);
 	};
 
-	if (isLoading) return <PageLoader />;
+	if (isLoading && !refreshing) return <PageLoader />;
 
 	return (
 		<View style={styles.container}>
@@ -77,7 +87,7 @@ export default function Page() {
 						<TouchableOpacity
 							style={styles.addButton}
 							onPress={() => {
-								router.push("/sign-in");
+								router.push("/create");
 							}}
 						>
 							<Ionicons
@@ -99,11 +109,19 @@ export default function Page() {
 				style={styles.transactionsList}
 				contentContainerStyle={styles.transactionsListContent}
 				data={transactions}
+				showsVerticalScrollIndicator={false}
+				ListEmptyComponent={!isLoading ? <NoTransactionsFound /> : null}
 				renderItem={({ item }) => {
 					return (
 						<TransactionItem item={item} onDelete={handleDelete} />
 					);
 				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefreashing}
+					/>
+				}
 			/>
 		</View>
 	);
