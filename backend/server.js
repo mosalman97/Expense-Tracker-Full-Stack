@@ -14,7 +14,7 @@ app.use("/api/transactions", transactionRoute);
 
 const PORT = process.env.PORT || 5002;
 
-app.get("/health-check", (req, res) => {
+app.get("/health", (req, res) => {
 	res.status(200).json({
 		message: "server is working live",
 	});
