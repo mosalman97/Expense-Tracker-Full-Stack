@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Alert, TouchableOpacity, TextInput } from "react-native";
+import {
+	View,
+	Text,
+	Alert,
+	TouchableOpacity,
+	TextInput,
+	ActivityIndicator,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { API_URL } from "../../hooks/useTransactions.js";
@@ -30,7 +37,7 @@ const create = () => {
 	const handleCreate = async () => {
 		if (!title.trim())
 			return Alert.alert("Error", "Please enter a transaction title");
-		if (!amount || NaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+		if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
 			Alert.alert("Error", "Please enter a valid amount");
 		}
 		if (!selectedCategory)
@@ -43,7 +50,7 @@ const create = () => {
 				? -Math.abs(parseFloat(amount))
 				: Math.abs(parseFloat(amount));
 
-			const response = await fetch(`${API_URL}/transactions`, {
+			const response = await fetch(`${API_URL}/transactions/`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -137,7 +144,7 @@ const create = () => {
 							!isExpense && styles.typeButtonActive,
 						]}
 						onPress={() => {
-							setIsExpense(true);
+							setIsExpense(false);
 						}}
 					>
 						<Ionicons
@@ -167,7 +174,73 @@ const create = () => {
 						keyboardType="numeric"
 					/>
 				</View>
+				<View style={styles.inputContainer}>
+					<Ionicons
+						name="create-outline"
+						size={22}
+						color={COLORS.textLight}
+						style={styles.inputIcon}
+					/>
+					<TextInput
+						style={styles.input}
+						placeholder="Transaction Title"
+						placeholderTextColor={COLORS.textLight}
+						value={title}
+						onChangeText={setTitle}
+					/>
+				</View>
+				<Text style={styles.sectionTitle}>
+					<Ionicons
+						name="arrow-up-circle"
+						size={16}
+						color={COLORS.text}
+						style={styles.typeIcon}
+					/>
+					Category
+				</Text>
+				<View style={styles.categoryGrid}>
+					{CATEGORIES.map((item, index) => {
+						return (
+							<TouchableOpacity
+								key={item.id}
+								style={[
+									styles.categoryButton,
+									selectedCategory === item.name &&
+										styles.categoryButtonActive,
+								]}
+								onPress={() => {
+									setSelectedCategory(item.name);
+								}}
+							>
+								<Ionicons
+									name={item.icon}
+									size={16}
+									color={
+										selectedCategory === item.name
+											? COLORS.white
+											: COLORS.text
+									}
+									style={styles.typeIcon}
+								/>
+								<Text
+									style={[
+										styles.categoryButtonText,
+										selectedCategory === item.name &&
+											styles.categoryButtonTextActive,
+									]}
+								>
+									{item.name}
+								</Text>
+							</TouchableOpacity>
+						);
+					})}
+				</View>
 			</View>
+			{isLoading && (
+				<View style={styles.loadingContainer}>
+					<ActivityIndicator size={"large"} color={COLORS.primary} />
+				</View>
+			)}
 		</View>
 	);
 };
