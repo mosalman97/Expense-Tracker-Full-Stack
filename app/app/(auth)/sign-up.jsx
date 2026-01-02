@@ -6,6 +6,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "../../assets/styles/auth.styles.js";
 import { COLORS } from "@/constants/colors.js";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
@@ -39,7 +40,13 @@ export default function SignUpScreen() {
 		} catch (err) {
 			// See https://clerk.com/docs/custom-flows/error-handling
 			// for more info on error handling
-			console.error(JSON.stringify(err, null, 2));
+			if (err.errors?.[0]?.code === "form_password_length_too_short") {
+				setError("Passwords must be 8 characters or more");
+			} else if (err.errors?.[0]?.code === "form_identifier_exists") {
+				setError("That email address is taken. Please try another");
+			} else {
+				setError("An error occurred. Please try again.");
+			}
 		}
 	};
 
@@ -113,12 +120,13 @@ export default function SignUpScreen() {
 	}
 
 	return (
-		<View
+		<KeyboardAwareScrollView
 			style={{
 				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
 			}}
+			contentContainerStyle={{ flexGrow: 1 }}
+			enableOnAndroid={true}
+			enableAutomaticScroll={true}
 		>
 			<View style={styles.container}>
 				<Image
@@ -177,6 +185,6 @@ export default function SignUpScreen() {
 					</Link>
 				</View>
 			</View>
-		</View>
+		</KeyboardAwareScrollView>
 	);
 }
