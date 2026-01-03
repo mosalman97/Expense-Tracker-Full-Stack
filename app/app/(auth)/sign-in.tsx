@@ -104,7 +104,7 @@ export default function Page() {
 					}}
 				>
 					<Text style={styles.footerText}>
-						Don't have and account?{" "}
+						Don&apos;t have and account?{" "}
 					</Text>
 					<Link href="/sign-up">
 						<Text style={styles.linkText}>Sign Up</Text>

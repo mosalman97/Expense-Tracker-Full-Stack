@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
-import { Link, router } from "expo-router";
+import { useUser } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 import {
 	Alert,
 	FlatList,
@@ -22,14 +22,8 @@ import { NoTransactionsFound } from "../../components/NoTransactionFound";
 
 export default function Page() {
 	const { user } = useUser();
-	const {
-		isLoading,
-		setIsLoading,
-		deleteTransaction,
-		fetchAll,
-		summery,
-		transactions,
-	} = useTransactions(user.id);
+	const { isLoading, deleteTransaction, fetchAll, summery, transactions } =
+		useTransactions(user.id);
 	const [refreshing, setRefreshing] = useState(false);
 
 	const onRefreashing = async () => {

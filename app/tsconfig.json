@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/SignOutButton.jsx", "app/(auth)/sign-up.jsx", "app/(auth)/sign-in.jsx", "components/TransactionItem.jsx"  ]
+, "components/SignOutButton.tsx", "app/(auth)/sign-up.tsx", "app/(auth)/sign-in.tsx", "components/TransactionItem.tsx"  ]
 }

@@ -24,7 +24,7 @@ const CATEGORIES = [
 	{ id: "other", name: "Other", icon: "ellipsis-horizontal" },
 ];
 
-const create = () => {
+const Create = () => {
 	const router = useRouter();
 	const { user } = useUser();
 
@@ -245,4 +245,4 @@ const create = () => {
 	);
 };
 
-export default create;
+export default Create;
